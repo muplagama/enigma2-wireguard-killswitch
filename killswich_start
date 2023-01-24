@@ -1,0 +1,49 @@
+#!/bin/sh
+VNAME="killswitch v1"
+VINFO="Enigma2 / Wireguard killswitch by LouCipher & muplagama"
+case "$1" in
+    start)
+        check_run=$(ps xuww | grep -i killswitch.sh|grep -v grep)
+        if  [ ! -z "$check_run" ]
+        then
+        echo "killwitch already running"
+        else
+        echo "starting killswitch"
+        /etc/wireguard/killswitch.sh&
+        fi
+        ;;
+     stop)
+        check_stop=$(ps xuww | grep -i killswitch.sh|grep -v grep)
+        if  [ ! -z "$check_stop" ]
+        then
+        echo "terminating killswitch"
+        pkill killswitch.sh
+        else
+        echo "killswitch already down"
+        fi
+        ;;
+     restart)
+        pkill killswitch.sh
+        /etc/wireguard/killswitch.sh&
+        ;;
+     status)
+        check_ps=$(ps xuww | grep -i killswitch.sh|grep -v grep)
+        if  [ ! -z "$check_ps" ]
+        then
+        echo "killswitch is running"
+        else
+        echo "killswitch is NOT running"
+        fi
+        ;;
+     version)
+        echo "$VNAME"
+        ;;
+     info)
+        echo "$VINFO"
+        ;;
+    *)
+        echo "usage: $0 start|stop|restart|status|version|info" >&2
+       exit 1
+       ;;
+esac
+exit 0
