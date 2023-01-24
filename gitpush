@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cd /home/muplagama/www/hxr.bond/enigma2_wireguard_killswitch
-git add .
-git commit -m "`date`"
-git push -u origin main
