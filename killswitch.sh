@@ -1,6 +1,6 @@
 #!/bin/bash
 ### Save default route ###
-if [ ! -f /etc/wireguard/route_default ]; then
+if [ -n /etc/wireguard/route_default ]; then
    ip route show default | grep default > /etc/wireguard/route_default
 fi
 ### Grep VPN url ###
@@ -16,7 +16,7 @@ while true
 do
 ### wg interface check
         check_vpn=$(wg show | grep endpoint)
-                if  [ ! -z "$check_vpn" ]
+                if  [ -n "$check_vpn" ]
                 then
 ### add default route
         add_default=$(ip route show default | grep default)
@@ -31,7 +31,7 @@ do
 ### lookup srv ip
         dns_v4=$(nslookup -query=A $url_grep 1.1.1.1 | grep Address | sed '/:53$/d' | sed s/^[^0-9]*//)
         rem_backup_v4=$(ip route show | grep "$dns_v4" )
-                if  [ ! -z "$rem_backup_v4" ]
+                if  [ -n "$rem_backup_v4" ]
                 then
                 ip route del $dns_v4
                 fi
@@ -43,7 +43,7 @@ do
          else
 ### remove default route
         del_default=$(ip route show default | grep default)
-                if  [ ! -z "$del_default" ]
+                if  [ -n "$del_default" ]
                 then
                 ip route del default
                 fi
