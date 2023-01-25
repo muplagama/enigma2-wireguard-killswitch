@@ -47,9 +47,10 @@ r)
 0)
 	echo "bye bye"
 	exit 0
-*)
-	wrong_opt
-	mainmenu
 	;;
+*)
+      	wrong_opt
+      	mainmenu
+      	;;
 esac
-mainemu
+mainmenu
