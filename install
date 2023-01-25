@@ -1,56 +1,89 @@
 #!/bin/bash +x
-
 my_header() {
+clear
 echo ""
 echo "simple enigma2 wireguard killswitch"
 echo ""
+}
 
-###### wrong_opt
 wrong_opt() {
   echo "Wrong option!"
   sleep 2
   clear
 }
-
-download () {
- if [ -n /etc/wireguard/wg0.conf ]; then
-	wget -O /etc/wireguard/killswitch.sh https://raw.githubusercontent.com/muplagama/enigma2-wireguard-killswitch/main/killswitch.sh  > /dev/null 2>&1
-	chmod +x /etc/wireguard/killswitch.sh
-        wget -O /etc/init.d/killswitch https://raw.githubusercontent.com/muplagama/enigma2-wireguard-killswitch/main/killswitch > /dev/null 2>&1
-        chmod +x /etc/init.d/killswitch
- fi
+preset () {
+ check_pre=$(opkg list-installed update-rc.d | grep update-rc.d)
+        if [ -n "$check_pre" ]; then
+        echo -e "update-rc.d found"
+        sleep 1
+else
+        echo -e "update-rc.d not found... installing.."
+        opkg install update-rc.d
+        sleep 1
+fi
 }
 
+download () {
+ check_wg=$(opkg list-installed wireguard-tools | grep wireguard)
+ if [ -n "$check_wg" ]; then
+        echo -e "download files.."
+        sleep 1
+        wget -O /etc/wireguard/killswitch.sh https://raw.githubusercontent.com/muplagama/enigma2-wireguard-killswitch/main/killswitch.sh  > /dev/null 2>&1
+        chmod +x /etc/wireguard/killswitch.sh
+        wget -O /etc/init.d/killswitch https://raw.githubusercontent.com/muplagama/enigma2-wireguard-killswitch/main/killswitch > /dev/null 2>&1
+        chmod +x /etc/init.d/killswitch
+ else
+        echo -e "!! No wg Installation found.. please install !!"
+        sleep 1
+        exit 0
+fi
+}
+ enable () {
+        echo "enable and start killswitch"
+        sleep 1
+        /etc/init.d/killswitch enable
+}
 
-
-
-
+ disable () {
+        echo "stop and disable killswitch"
+        sleep 1
+        /etc/init.d/killswitch disable
+        rm /etc/wireguard/killswitch.sh
+        rm /etc/init.d/killswitch
+}
 
 mainmenu() {
  my_header
 echo -e ""
 echo -e "        Menu             "
 echo -e ""
-echo -e "i) install wireguard killswitch"
-echo -e "r) remove wireguard killswitch"
+echo -e "1) install wireguard killswitch"
+echo -e "2) remove wireguard killswitch"
 echo -e ""
 echo -e "0) Exit"
+echo -e ""
+read -p "choose an Option: " main </dev/tty
 
 case $main in
-i)
-	download
-	mainmenu
-	;;
-r)
-	mainmenu
-	;;
+1)
+        preset
+        download
+        enable
+        mainmenu
+        ;;
+2)
+        disable
+        mainmenu
+        ;;
 0)
-	echo "bye bye"
-	exit 0
-	;;
+        echo "bye bye"
+        exit 0
+        ;;
 *)
-      	wrong_opt
-      	mainmenu
-      	;;
+        wrong_opt
+        mainmenu
+        ;;
+
 esac
+}
 mainmenu
