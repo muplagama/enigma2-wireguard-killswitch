@@ -1,0 +1,55 @@
+#!/bin/bash +x
+
+my_header() {
+echo ""
+echo "simple enigma2 wireguard killswitch"
+echo ""
+
+###### wrong_opt
+wrong_opt() {
+  echo "Wrong option!"
+  sleep 2
+  clear
+}
+
+download () {
+ if [ -n /etc/wireguard/wg0.conf ]; then
+	wget -O /etc/wireguard/killswitch.sh https://raw.githubusercontent.com/muplagama/enigma2-wireguard-killswitch/main/killswitch.sh  > /dev/null 2>&1
+	chmod +x /etc/wireguard/killswitch.sh
+        wget -O /etc/init.d/killswitch https://raw.githubusercontent.com/muplagama/enigma2-wireguard-killswitch/main/killswitch > /dev/null 2>&1
+        chmod +x /etc/init.d/killswitch
+ fi
+}
+
+
+
+
+
+
+mainmenu() {
+ my_header
+echo -e ""
+echo -e "        Menu             "
+echo -e ""
+echo -e "i) install wireguard killswitch"
+echo -e "r) remove wireguard killswitch"
+echo -e ""
+echo -e "0) Exit"
+
+case $main in
+i)
+	download
+	mainmenu
+	;;
+r)
+	mainmenu
+	;;
+0)
+	echo "bye bye"
+	exit 0
+*)
+	wrong_opt
+	mainmenu
+	;;
+esac
+mainemu
