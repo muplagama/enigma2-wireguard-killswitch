@@ -2,7 +2,7 @@
 WGDIR=/etc/wireguard
 NAME=killswitch
 RC=/etc/init.d/$NAME
-VNAME="killswitch v1"
+VNAME="killswitch v2"
 VINFO="Enigma2 / Wireguard killswitch by LouCipher & muplagama"
 
 case "$1" in
