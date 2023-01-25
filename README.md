@@ -5,7 +5,7 @@
 - wg0.conf in /etc/wireguard/
 
 ### Installation:
-- connect to your shell
+- connect to CLI
 - proof installation of bash
 - grap the command and execute
 
