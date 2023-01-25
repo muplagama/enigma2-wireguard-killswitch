@@ -1,39 +1,55 @@
 #!/bin/sh
+WGDIR=/etc/wireguard
+NAME=killswitch
+RC=/etc/init.d/$NAME
 VNAME="killswitch v1"
 VINFO="Enigma2 / Wireguard killswitch by LouCipher & muplagama"
+
 case "$1" in
     start)
-        check_run=$(pgrep killswitch.sh)
+        check_run=$(pgrep $NAME.sh)
         if  [ -n "$check_run" ]
         then
-        echo "killwitch already running"
+        echo "$NAME already running"
         else
-        echo "starting killswitch"
-        /etc/wireguard/killswitch.sh&
+        echo "starting $NAME"
+        $WGDIR/$NAME.sh&
         fi
         ;;
      stop)
-        check_stop=$(pgrep killswitch.sh)
+        check_stop=$(pgrep $NAME.sh)
         if  [ -n "$check_stop" ]
         then
-        echo "terminating killswitch"
-        pkill killswitch.sh
+        echo "terminating $NAME"
+        pkill $NAME.sh
         else
-        echo "killswitch already down"
+        echo "$NAME already down"
         fi
         ;;
      restart)
-        pkill killswitch.sh
-        /etc/wireguard/killswitch.sh&
+        pkill $NAME.sh
+        $WGDIR/$NAME.sh&
         ;;
      status)
-        check_ps=$(pgrep killswitch.sh)
+        check_ps=$(pgrep $NAME.sh)
         if  [ -n  "$check_ps" ]
         then
-        echo "killswitch is running"
+        echo "$NAME is running"
         else
-        echo "killswitch is NOT running"
+        echo "$NAME is NOT running"
         fi
+        ;;
+     enable)
+        echo "enable autostart"
+        update-rc.d $NAME defaults > /dev/null 2>&1
+        $RC start
+        $RC status
+        ;;
+     disable)
+        $RC stop
+        echo "remove autostart"
+        update-rc.d -f $NAME remove > /dev/null 2>&1
+        $RC status
         ;;
      version)
         echo "$VNAME"
@@ -42,7 +58,7 @@ case "$1" in
         echo "$VINFO"
         ;;
     *)
-        echo "usage: $0 start|stop|restart|status|version|info" >&2
+        echo "usage: $0 start|stop|restart|status|enable|disable|version|info" >&2
        exit 1
        ;;
 esac
