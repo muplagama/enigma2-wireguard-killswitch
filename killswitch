@@ -58,6 +58,7 @@ case "$1" in
 	rm $WGDIR/$NAME
 	rm $RC
 	echo "..done"
+	;;
      version)
         echo "$VNAME"
         ;;
