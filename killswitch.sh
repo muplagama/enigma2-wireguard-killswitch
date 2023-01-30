@@ -34,7 +34,12 @@ do
                 if  [ -n "$ping_check" ]
                 then
 ### lookup srv ip
-        dns_v4=$(nslookup -query=A "$url_grep" "$dns_ip" | grep Address | sed '/:53$/d' | sed s/^[^0-9]*//)
+		if [[ $url_grep =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]
+		then
+		dns_v4=$(grep Endpoint /etc/wireguard/wg0.conf | awk -F'=' '{print $2}' | awk -F# '{gsub(/ /,"");print ($1) }' | awk -F ':' '{print $1}')
+		else
+		dns_v4=$(nslookup -query=A "$url_grep" "$dns_ip" | grep Address | sed '/:53$/d' | sed s/^[^0-9]*//)
+		fi
         rem_backup_v4=$(ip route show | grep "$dns_v4" )
                 if  [ -n "$rem_backup_v4" ]
                 then
