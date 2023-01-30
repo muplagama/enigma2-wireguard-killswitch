@@ -55,7 +55,7 @@ case "$1" in
 	echo "remove autostart"
 	$RC disable
 	echo "remove files"
-	rm $WGDIR/$NAME
+	rm $WGDIR/$NAME.sh
 	rm $RC
 	echo "..done"
 	;;
