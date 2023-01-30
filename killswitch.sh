@@ -54,7 +54,7 @@ do
                 fi
 
 ### DNS Request
-	ns_request=$(ip route show | grep "default")
+	dns_request=$(ip route show | grep "default")
                 if  [ -z "$dns_request" ]
                 then
                         ip route add "$dns_ip" via "$route_ip" dev "$route_dev"
