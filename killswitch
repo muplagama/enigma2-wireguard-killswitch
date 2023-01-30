@@ -51,6 +51,13 @@ case "$1" in
         update-rc.d -f $NAME remove > /dev/null 2>&1
         $RC status
         ;;
+     uninstall)
+	echo "remove autostart"
+	$RC disable
+	echo "remove files"
+	rm $WGDIR/$NAME
+	rm $RC
+	echo "..done"
      version)
         echo "$VNAME"
         ;;
@@ -58,7 +65,7 @@ case "$1" in
         echo "$VINFO"
         ;;
     *)
-        echo "usage: $0 start|stop|restart|status|enable|disable|version|info" >&2
+        echo "usage: $0 start|stop|restart|status|enable|disable|uninstall|version|info" >&2
        exit 1
        ;;
 esac
