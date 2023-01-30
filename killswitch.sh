@@ -54,13 +54,20 @@ do
                 fi
 
 ### DNS Request
-        dns_request=$(ip route show | grep "default")
+	ns_request=$(ip route show | grep "default")
                 if  [ -z "$dns_request" ]
                 then
-                ip route add "$dns_ip" via "$route_ip" dev "$route_dev"
-                sleep 1
-        dns_v4=$(nslookup -query=A "$url_grep" "$dns_ip" | grep Address | sed '/:53$/d' | sed s/^[^0-9]*//)
-                ip route del "$dns_ip"
+                        ip route add "$dns_ip" via "$route_ip" dev "$route_dev"
+                        sleep 1
+                fi
+
+                if [[ $url_grep =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]
+                then
+                        dns_v4=$(grep Endpoint /etc/wireguard/wg0.conf | awk -F'=' '{print $2}' | awk -F# '{gsub(/ /,"");print ($1) }' | awk -F ':' '{print $1}')
+                        ip route del "$dns_ip"
+                else
+                        dns_v4=$(nslookup -query=A "$url_grep" "$dns_ip" | grep Address | sed '/:53$/d' | sed s/^[^0-9]*//)
+                        ip route del "$dns_ip"
                 fi
 ### add Backup Route
         add_backup_A=$(ip route show | grep "$dns_v4")
